@@ -1,0 +1,36 @@
+
+services:
+
+  web:
+    build:
+      context: ./Project/
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn audio.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./spicies/:/usr/src/app/
+      - ./static_files:/usr/src/app/staticfiles
+    expose:
+     - 8000
+    #ports:
+     #- 8000:8000
+    #env_file:
+    #  - ./.env/dev.env
+      
+
+  nginx:
+     build:
+      context: ./nginx/
+     ports:
+      - 80:80
+      - 443:443
+      
+     volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./static/:/home/app/staticfiles
+      - ./media/:/home/app/media
+      #- static_files:/home/app/staticfiles
+     # - media:/home/app/media
+
+volumes:
+  static_files:
+  media:
